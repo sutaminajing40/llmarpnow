@@ -9,15 +9,13 @@ if (typeof window !== 'undefined' && process.env.NEXT_PUBLIC_ENABLE_POSTHOG) {
     person_profiles: 'identified_only',
     session_recording: {
       recordCrossOriginIframes: true,
-    }
+    },
   })
 }
 
 export function PostHogProvider({ children }: { children: React.ReactNode }) {
   return process.env.NEXT_PUBLIC_ENABLE_POSTHOG ? (
-    <PostHogProviderJS client={posthog}>
-      {children}
-    </PostHogProviderJS>
+    <PostHogProviderJS client={posthog}>{children}</PostHogProviderJS>
   ) : (
     children
   )

@@ -1,9 +1,4 @@
-import {
-  forwardRef,
-  useCallback,
-  useEffect,
-  useState,
-} from 'react'
+import { forwardRef, useCallback, useEffect, useState } from 'react'
 import { useResizeDetector } from 'react-resize-detector'
 import type { Terminal as XTermTerminal } from '@xterm/xterm'
 import type { FitAddon } from '@xterm/addon-fit'
@@ -17,12 +12,9 @@ export interface Props {
   autofocus?: boolean
 }
 
-const Terminal = forwardRef<{}, Props>(({
-  autofocus,
-  sandboxID,
-}, ref) => {
+const Terminal = forwardRef<{}, Props>(({ autofocus, sandboxID }, ref) => {
   const [errMessage, setErrMessage] = useState('')
-  const [terminal, setTerminal] = useState<{ terminal: XTermTerminal, fitAddon: FitAddon }>()
+  const [terminal, setTerminal] = useState<{ terminal: XTermTerminal; fitAddon: FitAddon }>()
 
   const { sandbox } = useSandbox(sandboxID)
   const pty = useTerminal({
@@ -30,12 +22,12 @@ const Terminal = forwardRef<{}, Props>(({
     terminal: terminal?.terminal,
   })
 
-  useEffect(function removeErrorMessage() {
-    setErrMessage('')
-  }, [
-    sandbox,
-    pty,
-  ])
+  useEffect(
+    function removeErrorMessage() {
+      setErrMessage('')
+    },
+    [sandbox, pty]
+  )
 
   const focus = useCallback(() => {
     terminal?.terminal.focus()
@@ -54,61 +46,59 @@ const Terminal = forwardRef<{}, Props>(({
 
   const { ref: terminalRef } = useResizeDetector<HTMLDivElement>({ onResize })
 
-  useEffect(function initialize() {
-    async function init() {
-      if (!terminalRef.current) return
+  useEffect(
+    function initialize() {
+      async function init() {
+        if (!terminalRef.current) return
 
-      const xterm = await import('@xterm/xterm')
+        const xterm = await import('@xterm/xterm')
 
-      const term = new xterm.Terminal({
-        cursorStyle: 'block',
-        fontSize: 13,
-        theme: {
-          background: '#000',
-          foreground: '#FFFFFF',
-          cursor: '#FFFFFF',
-        },
-        allowProposedApi: true,
-      })
+        const term = new xterm.Terminal({
+          cursorStyle: 'block',
+          fontSize: 13,
+          theme: {
+            background: '#000',
+            foreground: '#FFFFFF',
+            cursor: '#FFFFFF',
+          },
+          allowProposedApi: true,
+        })
 
-      const { FitAddon } = await import('@xterm/addon-fit')
-      const fitAddon = new FitAddon()
-      term.loadAddon(fitAddon)
-      term.open(terminalRef.current)
+        const { FitAddon } = await import('@xterm/addon-fit')
+        const fitAddon = new FitAddon()
+        term.loadAddon(fitAddon)
+        term.open(terminalRef.current)
 
-      setTerminal({
-        fitAddon,
-        terminal: term,
-      })
+        setTerminal({
+          fitAddon,
+          terminal: term,
+        })
 
-      // TODO: We want to add handling of multiline commands
+        // TODO: We want to add handling of multiline commands
 
-      if (autofocus) term.focus()
+        if (autofocus) term.focus()
 
+        const { CanvasAddon } = await import('@xterm/addon-canvas')
+        const canvasAddon = new CanvasAddon()
+        term.loadAddon(canvasAddon)
 
-      const { CanvasAddon } = await import('@xterm/addon-canvas')
-      const canvasAddon = new CanvasAddon()
-      term.loadAddon(canvasAddon)
+        fitAddon.fit()
 
-      fitAddon.fit()
+        return term
+      }
 
-      return term
-    }
+      const result = init()
 
-    const result = init()
-
-    return () => {
-      result.then(i => i?.dispose())
-    }
-  }, [
-    terminalRef,
-    autofocus,
-  ])
+      return () => {
+        result.then((i) => i?.dispose())
+      }
+    },
+    [terminalRef, autofocus]
+  )
 
   const clear = useCallback(() => {
     terminal?.terminal.clear()
   }, [terminal?.terminal])
-
 
   return (
     <div className="py-2 pl-2 flex-1 bg-[#000] flex">
@@ -118,13 +108,14 @@ const Terminal = forwardRef<{}, Props>(({
           flex
           relative
           bg-[#000]
-        ">
+        "
+      >
         {/*
-           * We assign the `sizeRef` and the `terminalRef` to a child element intentionally
-           * because the fit addon for xterm.js resizes the terminal based on the PARENT'S size.
-           * The child element MUST have set the same width and height of it's parent, hence
-           * the `w-full` and `h-full`.
-           */}
+         * We assign the `sizeRef` and the `terminalRef` to a child element intentionally
+         * because the fit addon for xterm.js resizes the terminal based on the PARENT'S size.
+         * The child element MUST have set the same width and height of it's parent, hence
+         * the `w-full` and `h-full`.
+         */}
         <div
           ref={terminalRef}
           className="
@@ -134,8 +125,9 @@ const Terminal = forwardRef<{}, Props>(({
             h-full
             w-full
             bg-[#000]
-          " />
-        {(errMessage || !terminal || (!pty)) &&
+          "
+        />
+        {(errMessage || !terminal || !pty) && (
           <div
             className="
               absolute
@@ -144,7 +136,8 @@ const Terminal = forwardRef<{}, Props>(({
               top-0
               left-0
               bg-[#000]
-              ">
+              "
+          >
             <div
               className="
                 text-white
@@ -153,17 +146,13 @@ const Terminal = forwardRef<{}, Props>(({
                 h-full
                 items-center
                 justify-center
-              ">
-              {errMessage &&
-                <div
-                  className="text-red">
-                  {errMessage}
-                </div>
-              }
-              {(!terminal || (!pty)) && <Spinner />}
+              "
+            >
+              {errMessage && <div className="text-red">{errMessage}</div>}
+              {(!terminal || !pty) && <Spinner />}
             </div>
           </div>
-        }
+        )}
       </div>
     </div>
   )

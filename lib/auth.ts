@@ -3,18 +3,24 @@ import { Session } from '@supabase/supabase-js'
 import { supabase } from './supabase'
 import { usePostHog } from 'posthog-js/react'
 
-export type AuthViewType = "sign_in" | "sign_up" | "magic_link" | "forgotten_password" | "update_password" | "verify_otp"
+export type AuthViewType =
+  | 'sign_in'
+  | 'sign_up'
+  | 'magic_link'
+  | 'forgotten_password'
+  | 'update_password'
+  | 'verify_otp'
 
 interface UserTeam {
-  id: string;
-  name: string;
-  is_default: boolean;
-  tier: string;
-  email: string;
-  team_api_keys: { api_key: string; }[];
+  id: string
+  name: string
+  is_default: boolean
+  tier: string
+  email: string
+  team_api_keys: { api_key: string }[]
 }
 
-export async function getUserAPIKey (session: Session) {
+export async function getUserAPIKey(session: Session) {
   // If Supabase is not initialized will use E2B_API_KEY env var
   if (!supabase) return undefined
 
@@ -23,18 +29,23 @@ export async function getUserAPIKey (session: Session) {
     .select('teams (id, name, is_default, tier, email, team_api_keys (api_key))')
     .eq('user_id', session?.user.id)
 
-  const teams = userTeams?.map((userTeam: any) => userTeam.teams).map((team: UserTeam) => {
-    return {
-      ...team,
-      apiKeys: team.team_api_keys.map(apiKey => apiKey.api_key)
-    }
-  })
+  const teams = userTeams
+    ?.map((userTeam: any) => userTeam.teams)
+    .map((team: UserTeam) => {
+      return {
+        ...team,
+        apiKeys: team.team_api_keys.map((apiKey) => apiKey.api_key),
+      }
+    })
 
-  const defaultTeam = teams?.find(team => team.is_default)
+  const defaultTeam = teams?.find((team) => team.is_default)
   return defaultTeam?.apiKeys[0]
 }
 
-export function useAuth (setAuthDialog: (value: boolean) => void, setAuthView: (value: AuthViewType) => void) {
+export function useAuth(
+  setAuthDialog: (value: boolean) => void,
+  setAuthView: (value: AuthViewType) => void
+) {
   const [session, setSession] = useState<Session | null>(null)
   const [apiKey, setApiKey] = useState<string | undefined>(undefined)
   const posthog = usePostHog()
@@ -86,6 +97,6 @@ export function useAuth (setAuthDialog: (value: boolean) => void, setAuthView: (
 
   return {
     session,
-    apiKey
+    apiKey,
   }
 }

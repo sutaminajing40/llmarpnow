@@ -1,16 +1,18 @@
 import { AuthViewType } from '@/lib/auth'
 import { Auth } from '@supabase/auth-ui-react'
-import {
-  ThemeSupa
-} from '@supabase/auth-ui-shared'
+import { ThemeSupa } from '@supabase/auth-ui-shared'
 import { SupabaseClient } from '@supabase/supabase-js'
 
-function AuthForm({ supabase, view = 'sign_in' }: { supabase: SupabaseClient, view: AuthViewType }) {
+function AuthForm({
+  supabase,
+  view = 'sign_in',
+}: {
+  supabase: SupabaseClient
+  view: AuthViewType
+}) {
   return (
     <div className="mx-auto flex flex-1 w-full justify-center items-center flex-col">
-      <h1 className="text-4xl font-bold mt-8 mb-4">
-        Sign in to E2B
-      </h1>
+      <h1 className="text-4xl font-bold mt-8 mb-4">Sign in to E2B</h1>
       <div className="md:w-[420px] w-[240px]">
         <Auth
           supabaseClient={supabase}
@@ -25,8 +27,8 @@ function AuthForm({ supabase, view = 'sign_in' }: { supabase: SupabaseClient, vi
                 },
                 radii: {
                   borderRadiusButton: '20px',
-                  inputBorderRadius: '12px'
-                }
+                  inputBorderRadius: '12px',
+                },
               },
             },
           }}
@@ -39,7 +41,7 @@ function AuthForm({ supabase, view = 'sign_in' }: { supabase: SupabaseClient, vi
             },
           }}
           view={view}
-          theme='default'
+          theme="default"
           showLinks={true}
           providers={['github']}
           providerScopes={{

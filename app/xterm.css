@@ -35,8 +35,9 @@
  *  Default styles for xterm.js
  */
 
- .xterm {
-  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+.xterm {
+  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    'Liberation Mono', 'Courier New', monospace;
   position: relative;
   user-select: none;
   -ms-user-select: none;
@@ -81,7 +82,7 @@
 .xterm .composition-view {
   /* TODO: Composition position got messed up somewhere */
   background: #000;
-  color: #FFF;
+  color: #fff;
   display: none;
   position: absolute;
   white-space: nowrap;
@@ -187,7 +188,7 @@
   left: 0;
   top: 0;
   bottom: 0;
-  scrollbar-color: #8F8F8F transparent;
+  scrollbar-color: #8f8f8f transparent;
   scrollbar-width: thin;
 
   /* CUSTOM */
