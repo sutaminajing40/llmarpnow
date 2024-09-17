@@ -1,13 +1,8 @@
-import {
-  streamObject,
-  LanguageModel,
-  CoreMessage,
-  generateText,
-} from 'ai'
+import { streamObject, LanguageModel, CoreMessage, generateText } from 'ai'
 
 import ratelimit from '@/lib/ratelimit'
 import { Templates, templatesToPrompt } from '@/lib/templates'
-import { getModelClient, getDefaultMode } from '@/lib/models'
+import { getModelClient } from '@/lib/models'
 import { LLMModel, LLMModelConfig } from '@/lib/models'
 import { artifactSchema as schema } from '@/lib/schema'
 import { openai } from '@ai-sdk/openai'
@@ -25,12 +20,24 @@ export async function POST(req: Request) {
       headers: {
         'X-RateLimit-Limit': limit.amount.toString(),
         'X-RateLimit-Remaining': limit.remaining.toString(),
-        'X-RateLimit-Reset': limit.reset.toString()
-      }
+        'X-RateLimit-Reset': limit.reset.toString(),
+      },
     })
   }
 
-  const { messages, userID, template, model, config }: { messages: CoreMessage[], userID: string, template: Templates, model: LLMModel, config: LLMModelConfig } = await req.json()
+  const {
+    messages,
+    userID,
+    template,
+    model,
+    config,
+  }: {
+    messages: CoreMessage[]
+    userID: string
+    template: Templates
+    model: LLMModel
+    config: LLMModelConfig
+  } = await req.json()
   console.log('userID', userID)
   // console.log('template', template)
   console.log('model', model)

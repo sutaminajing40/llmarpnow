@@ -7,20 +7,18 @@ const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: 'AI Artifacts by E2B',
-  description: 'About Hackable open-source version of Anthropic\'s AI Artifacts chat',
+  description: "About Hackable open-source version of Anthropic's AI Artifacts chat",
 }
 
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode;
+  children: React.ReactNode
 }>) {
   return (
     <html lang="en">
       <PostHogProvider>
-        <body className={inter.className}>
-          {children}
-        </body>
+        <body className={inter.className}>{children}</body>
       </PostHogProvider>
     </html>
   )

@@ -3,32 +3,29 @@ import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import { Terminal } from 'lucide-react'
 
-import {
-  Alert,
-  AlertTitle,
-  AlertDescription,
-} from '@/components/ui/alert'
+import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert'
 import { ExecutionResult } from '@/app/api/sandbox/route'
 import { TemplateId } from '@/lib/templates'
 
-function LogsOutput({ stdout, stderr }: {
-  stdout: string[]
-  stderr: string[]
-}) {
+function LogsOutput({ stdout, stderr }: { stdout: string[]; stderr: string[] }) {
   if (stdout.length === 0 && stderr.length === 0) return null
 
   return (
     <div className="w-full h-32 max-h-32 overflow-y-auto flex flex-col items-start justify-start space-y-1 p-4 border-t">
-      {stdout && stdout.length > 0 && stdout.map((out: string, index: number) => (
-        <pre key={index} className="text-xs">
-          {out}
-        </pre>
-      ))}
-      {stderr && stderr.length > 0 && stderr.map((err: string, index: number) => (
-        <pre key={index} className="text-xs text-red-500">
-          {err}
-        </pre>
-      ))}
+      {stdout &&
+        stdout.length > 0 &&
+        stdout.map((out: string, index: number) => (
+          <pre key={index} className="text-xs">
+            {out}
+          </pre>
+        ))}
+      {stderr &&
+        stderr.length > 0 &&
+        stderr.map((err: string, index: number) => (
+          <pre key={index} className="text-xs text-red-500">
+            {err}
+          </pre>
+        ))}
     </div>
   )
 }
@@ -66,8 +63,10 @@ export function ArtifactView({
     return (
       <div className="p-4">
         <Alert variant="destructive">
-          <Terminal className="h-4 w-4"/>
-          <AlertTitle>{name}: {value}</AlertTitle>
+          <Terminal className="h-4 w-4" />
+          <AlertTitle>
+            {name}: {value}
+          </AlertTitle>
           <AlertDescription className="font-mono whitespace-pre-wrap">
             {tracebackRaw}
           </AlertDescription>
@@ -98,12 +97,8 @@ export function ArtifactView({
 
   // No cell results, but there is stdout or stderr
   if (stdout.length > 0 || stderr.length > 0) {
-    return (
-      <LogsOutput stdout={stdout} stderr={stderr} />
-    )
+    return <LogsOutput stdout={stdout} stderr={stderr} />
   }
 
-  return (
-    <span>No output or logs</span>
-  )
+  return <span>No output or logs</span>
 }

@@ -15,18 +15,18 @@ import { AuthDialog } from '@/components/AuthDialog'
 import { AuthViewType, useAuth } from '@/lib/auth'
 import { Message, toAISDKMessages, toMessageImage } from '@/lib/messages'
 
-import { LLMModel, LLMModelConfig } from '@/lib/models'
+import { LLMModelConfig } from '@/lib/models'
 import modelsList from '@/lib/models.json'
-import templates, { TemplateId } from '@/lib/templates';
+import templates, { TemplateId } from '@/lib/templates'
 
-import { ExecutionResult } from './api/sandbox/route';
+import { ExecutionResult } from './api/sandbox/route'
 
 export default function Home() {
   const [chatInput, setChatInput] = useLocalStorage('chat', '')
   const [files, setFiles] = useState<FileList | null>(null)
   const [selectedTemplate, setSelectedTemplate] = useState<'auto' | TemplateId>('auto')
   const [languageModel, setLanguageModel] = useLocalStorage<LLMModelConfig>('languageModel', {
-    model: 'claude-3-5-sonnet-20240620'
+    model: 'claude-3-5-sonnet-20240620',
   })
 
   const posthog = usePostHog()
@@ -40,11 +40,15 @@ export default function Home() {
   const [authView, setAuthView] = useState<AuthViewType>('sign_in')
   const { session, apiKey } = useAuth(setAuthDialog, setAuthView)
 
-  const currentModel = modelsList.models.find(model => model.id === languageModel.model)
-  const currentTemplate = selectedTemplate === 'auto' ? templates : { [selectedTemplate]: templates[selectedTemplate] }
+  const currentModel = modelsList.models.find((model) => model.id === languageModel.model)
+  const currentTemplate =
+    selectedTemplate === 'auto' ? templates : { [selectedTemplate]: templates[selectedTemplate] }
 
-  const { object, submit, isLoading, stop, error } = useObject({
-    api: currentModel?.id === 'o1-preview' || currentModel?.id === 'o1-mini' ? '/api/chat-o1' : '/api/chat',
+  const { object, submit, isLoading, stop } = useObject({
+    api:
+      currentModel?.id === 'o1-preview' || currentModel?.id === 'o1-mini'
+        ? '/api/chat-o1'
+        : '/api/chat',
     schema,
     onFinish: async ({ object: artifact, error }) => {
       if (!error) {
@@ -56,8 +60,8 @@ export default function Home() {
           body: JSON.stringify({
             artifact,
             userID: session?.user?.id,
-            apiKey
-          })
+            apiKey,
+          }),
         })
 
         const result = await response.json()
@@ -67,24 +71,27 @@ export default function Home() {
         setCurrentTab('artifact')
         setIsPreviewLoading(false)
       }
-    }
+    },
   })
 
   useEffect(() => {
     if (object) {
       setArtifact(object as ArtifactSchema)
-      const lastAssistantMessage = messages.findLast(message => message.role === 'assistant')
+      const lastAssistantMessage = messages.findLast((message) => message.role === 'assistant')
       if (lastAssistantMessage) {
-        lastAssistantMessage.content = [{ type: 'text', text: object.commentary || '' }, { type: 'code', text: object.code || '' }]
+        lastAssistantMessage.content = [
+          { type: 'text', text: object.commentary || '' },
+          { type: 'code', text: object.code || '' },
+        ]
         lastAssistantMessage.meta = {
           title: object.title,
-          description: object.description
+          description: object.description,
         }
       }
     }
   }, [object])
 
-  async function handleSubmitAuth (e: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmitAuth(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
 
     if (!session) {
@@ -99,7 +106,7 @@ export default function Home() {
     const images = await toMessageImage(files)
 
     if (images.length > 0) {
-      images.forEach(image => {
+      images.forEach((image) => {
         content.push({ type: 'image', image })
       })
     }
@@ -133,35 +140,35 @@ export default function Home() {
     })
   }
 
-  function addMessage (message: Message) {
-    setMessages(previousMessages => [...previousMessages, message])
+  function addMessage(message: Message) {
+    setMessages((previousMessages) => [...previousMessages, message])
     return [...messages, message]
   }
 
-  function handleSaveInputChange (e: React.ChangeEvent<HTMLInputElement>) {
+  function handleSaveInputChange(e: React.ChangeEvent<HTMLInputElement>) {
     setChatInput(e.target.value)
   }
 
-  function handleFileChange (e: React.ChangeEvent<HTMLInputElement>) {
+  function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     if (e.target.files) {
       setFiles(e.target.files)
     }
   }
 
-  function logout () {
+  function logout() {
     supabase ? supabase.auth.signOut() : console.warn('Supabase is not initialized')
   }
 
-  function handleLanguageModelChange (e: LLMModelConfig) {
+  function handleLanguageModelChange(e: LLMModelConfig) {
     setLanguageModel({ ...languageModel, ...e })
   }
 
-  function handleGitHubClick () {
+  function handleGitHubClick() {
     window.open('https://github.com/e2b-dev/ai-artifacts', '_blank')
     posthog.capture('github_click')
   }
 
-  function handleNewChat () {
+  function handleNewChat() {
     stop()
     setMessages([])
     setArtifact(undefined)
@@ -172,9 +179,14 @@ export default function Home() {
 
   return (
     <main className="flex min-h-screen max-h-screen">
-      {
-        supabase && <AuthDialog open={isAuthDialogOpen} setOpen={setAuthDialog} view={authView} supabase={supabase} />
-      }
+      {supabase && (
+        <AuthDialog
+          open={isAuthDialogOpen}
+          setOpen={setAuthDialog}
+          view={authView}
+          supabase={supabase}
+        />
+      )}
       <NavBar
         session={session}
         showLogin={() => setAuthDialog(true)}

@@ -8,7 +8,7 @@ import {
   DropdownMenuContent,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from '@/components/ui/dropdown-menu'
 import { Separator } from '@/components/ui/separator'
 import { GithubIcon, LogOut, Plus, Settings2, Sparkles } from 'lucide-react'
 
@@ -20,7 +20,7 @@ import {
   SelectLabel,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
+} from '@/components/ui/select'
 import { Templates, TemplateId } from '@/lib/templates'
 import { LLMModel, LLMModelConfig } from '@/lib/models'
 import { Input } from './ui/input'
@@ -39,21 +39,21 @@ export default function NavBar({
   apiKeyConfigurable,
   baseURLConfigurable,
   onGitHubClick,
-  onNewChat
+  onNewChat,
 }: {
-  session: Session | null,
-  showLogin: () => void,
-  signOut: () => void,
-  templates: Templates,
-  selectedTemplate: 'auto' | TemplateId,
-  onSelectedTemplateChange: (template: 'auto' | TemplateId) => void,
-  models: LLMModel[],
-  languageModel: LLMModelConfig,
-  onLanguageModelChange: (config: LLMModelConfig) => void,
-  apiKeyConfigurable: boolean,
-  baseURLConfigurable: boolean,
-  onGitHubClick: () => void,
-  onNewChat: () => void,
+  session: Session | null
+  showLogin: () => void
+  signOut: () => void
+  templates: Templates
+  selectedTemplate: 'auto' | TemplateId
+  onSelectedTemplateChange: (template: 'auto' | TemplateId) => void
+  models: LLMModel[]
+  languageModel: LLMModelConfig
+  onLanguageModelChange: (config: LLMModelConfig) => void
+  apiKeyConfigurable: boolean
+  baseURLConfigurable: boolean
+  onGitHubClick: () => void
+  onNewChat: () => void
 }) {
   return (
     <nav className="fixed top-0 left-0 right-0 bg-background">
@@ -63,7 +63,13 @@ export default function NavBar({
             <Image src="/logo.svg" alt="logo" width={30} height={30} />
             <h1 className="whitespace-pre">AI Artifacts by </h1>
           </Link>
-          <Link href="https://e2b.dev" className="underline decoration-[#ff8800] decoration-2 text-[#ff8800]" target="_blank">E2B</Link>
+          <Link
+            href="https://e2b.dev"
+            className="underline decoration-[#ff8800] decoration-2 text-[#ff8800]"
+            target="_blank"
+          >
+            E2B
+          </Link>
         </div>
         <div className="flex justify-end space-x-4">
           <Button variant="outline" onClick={onGitHubClick}>
@@ -78,7 +84,12 @@ export default function NavBar({
               </Button>
             </div>
           ) : (
-            <Button variant="default" size="icon" className="text-sm font-medium px-8 py-2" onClick={showLogin}>
+            <Button
+              variant="default"
+              size="icon"
+              className="text-sm font-medium px-8 py-2"
+              onClick={showLogin}
+            >
               Sign in
             </Button>
           )}
@@ -87,7 +98,11 @@ export default function NavBar({
       <div className="flex w-full items-end border-b px-4 py-2 space-x-2">
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="template">Persona</Label>
-          <Select name="template" defaultValue={selectedTemplate} onValueChange={onSelectedTemplateChange}>
+          <Select
+            name="template"
+            defaultValue={selectedTemplate}
+            onValueChange={onSelectedTemplateChange}
+          >
             <SelectTrigger className="w-[200px]">
               <SelectValue placeholder="Select a persona" />
             </SelectTrigger>
@@ -103,7 +118,13 @@ export default function NavBar({
                 {Object.entries(templates).map(([templateId, template]) => (
                   <SelectItem key={templateId} value={templateId}>
                     <div className="flex items-center space-x-2">
-                      <Image className="flex" src={`/thirdparty/templates/${templateId}.svg`} alt={templateId} width={16} height={16} />
+                      <Image
+                        className="flex"
+                        src={`/thirdparty/templates/${templateId}.svg`}
+                        alt={templateId}
+                        width={16}
+                        height={16}
+                      />
                       <span>{template.name}</span>
                     </div>
                   </SelectItem>
@@ -114,19 +135,29 @@ export default function NavBar({
         </div>
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="languageModel">Model</Label>
-          <Select name="languageModel" defaultValue={languageModel.model} onValueChange={(e) => onLanguageModelChange({ model: e })}>
+          <Select
+            name="languageModel"
+            defaultValue={languageModel.model}
+            onValueChange={(e) => onLanguageModelChange({ model: e })}
+          >
             <SelectTrigger className="w-[200px] whitespace-nowrap">
               <SelectValue placeholder="Language model" />
             </SelectTrigger>
             <SelectContent>
-              {Object.entries(Object.groupBy(models, ({ provider }) => provider))
-                .map(([provider, models]) => (
+              {Object.entries(Object.groupBy(models, ({ provider }) => provider)).map(
+                ([provider, models]) => (
                   <SelectGroup key={provider}>
                     <SelectLabel>{provider}</SelectLabel>
                     {models?.map((model) => (
                       <SelectItem key={model.id} value={model.id}>
                         <div className="flex items-center space-x-2">
-                          <Image className="flex" src={`/thirdparty/logos/${model.providerId}.svg`} alt={model.provider} width={16} height={16} />
+                          <Image
+                            className="flex"
+                            src={`/thirdparty/logos/${model.providerId}.svg`}
+                            alt={model.provider}
+                            width={16}
+                            height={16}
+                          />
                           <span>{model.name}</span>
                         </div>
                       </SelectItem>
@@ -154,8 +185,12 @@ export default function NavBar({
                     placeholder="Auto"
                     required={true}
                     defaultValue={languageModel.apiKey}
-                    onChange={(e) => onLanguageModelChange({ apiKey: e.target.value.length > 0 ? e.target.value : undefined })}
-                    className='text-sm'
+                    onChange={(e) =>
+                      onLanguageModelChange({
+                        apiKey: e.target.value.length > 0 ? e.target.value : undefined,
+                      })
+                    }
+                    className="text-sm"
                   />
                 </div>
                 <DropdownMenuSeparator />
@@ -171,8 +206,12 @@ export default function NavBar({
                     placeholder="Auto"
                     required={true}
                     defaultValue={languageModel.baseURL}
-                    onChange={(e) => onLanguageModelChange({ baseURL: e.target.value.length > 0 ? e.target.value : undefined })}
-                    className='text-sm'
+                    onChange={(e) =>
+                      onLanguageModelChange({
+                        baseURL: e.target.value.length > 0 ? e.target.value : undefined,
+                      })
+                    }
+                    className="text-sm"
                   />
                 </div>
                 <DropdownMenuSeparator />
@@ -186,9 +225,11 @@ export default function NavBar({
                 min={50}
                 max={10000}
                 step={1}
-                className='h-6 rounded-sm w-[84px] text-xs text-center tabular-nums'
-                placeholder='Auto'
-                onChange={(e) => onLanguageModelChange({ maxTokens: parseFloat(e.target.value) || undefined })}
+                className="h-6 rounded-sm w-[84px] text-xs text-center tabular-nums"
+                placeholder="Auto"
+                onChange={(e) =>
+                  onLanguageModelChange({ maxTokens: parseFloat(e.target.value) || undefined })
+                }
               />
             </div>
             <div className="flex gap-1.5 px-2 py-2 items-center space-x-4">
@@ -199,21 +240,26 @@ export default function NavBar({
                 min={0}
                 max={5}
                 step={0.01}
-                className='h-6 rounded-sm w-[84px] text-xs text-center tabular-nums'
-                placeholder='Auto'
-                onChange={(e) => onLanguageModelChange({ temperature: parseFloat(e.target.value) || undefined })}
+                className="h-6 rounded-sm w-[84px] text-xs text-center tabular-nums"
+                placeholder="Auto"
+                onChange={(e) =>
+                  onLanguageModelChange({ temperature: parseFloat(e.target.value) || undefined })
+                }
               />
             </div>
             <div className="flex gap-1.5 px-2 py-2 items-center space-x-4">
               <span className="text-sm flex-1">Top P</span>
-              <Input type="number"
+              <Input
+                type="number"
                 defaultValue={languageModel.topP}
                 min={0}
                 max={1}
                 step={0.01}
-                className='h-6 rounded-sm w-[84px] text-xs text-center tabular-nums'
-                placeholder='Auto'
-                onChange={(e) => onLanguageModelChange({ topP: parseFloat(e.target.value) || undefined })}
+                className="h-6 rounded-sm w-[84px] text-xs text-center tabular-nums"
+                placeholder="Auto"
+                onChange={(e) =>
+                  onLanguageModelChange({ topP: parseFloat(e.target.value) || undefined })
+                }
               />
             </div>
             <div className="flex gap-1.5 px-2 py-2 items-center space-x-4">
@@ -224,9 +270,11 @@ export default function NavBar({
                 min={0}
                 max={500}
                 step={1}
-                className='h-6 rounded-sm w-[84px] text-xs text-center tabular-nums'
-                placeholder='Auto'
-                onChange={(e) => onLanguageModelChange({ topK: parseFloat(e.target.value) || undefined })}
+                className="h-6 rounded-sm w-[84px] text-xs text-center tabular-nums"
+                placeholder="Auto"
+                onChange={(e) =>
+                  onLanguageModelChange({ topK: parseFloat(e.target.value) || undefined })
+                }
               />
             </div>
             <div className="flex gap-1.5 px-2 py-2 items-center space-x-4">
@@ -237,9 +285,13 @@ export default function NavBar({
                 min={0}
                 max={2}
                 step={0.01}
-                className='h-6 rounded-sm w-[84px] text-xs text-center tabular-nums'
-                placeholder='Auto'
-                onChange={(e) => onLanguageModelChange({ frequencyPenalty: parseFloat(e.target.value) || undefined })}
+                className="h-6 rounded-sm w-[84px] text-xs text-center tabular-nums"
+                placeholder="Auto"
+                onChange={(e) =>
+                  onLanguageModelChange({
+                    frequencyPenalty: parseFloat(e.target.value) || undefined,
+                  })
+                }
               />
             </div>
             <div className="flex gap-1.5 px-2 py-2 items-center space-x-4">
@@ -250,14 +302,18 @@ export default function NavBar({
                 min={0}
                 max={2}
                 step={0.01}
-                className='h-6 rounded-sm w-[84px] text-xs text-center tabular-nums'
-                placeholder='Auto'
-                onChange={(e) => onLanguageModelChange({ presencePenalty: parseFloat(e.target.value) || undefined })}
+                className="h-6 rounded-sm w-[84px] text-xs text-center tabular-nums"
+                placeholder="Auto"
+                onChange={(e) =>
+                  onLanguageModelChange({
+                    presencePenalty: parseFloat(e.target.value) || undefined,
+                  })
+                }
               />
             </div>
           </DropdownMenuContent>
         </DropdownMenu>
-        <Button variant='secondary' className="!ml-auto" onClick={onNewChat}>
+        <Button variant="secondary" className="!ml-auto" onClick={onNewChat}>
           <Plus className="mr-2 h-4 w-4" /> New chat
         </Button>
       </div>
